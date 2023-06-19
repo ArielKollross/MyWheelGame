@@ -1,10 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, FlatList } from 'react-native';
+import WheelOfFortune from 'react-native-wheel-of-fortune';
 
 export default function App() {
   const [ wheelItem, setWheelItem ] = useState('');
   const [ wheelItems, setWheelItems ] = useState([]);
+
+  const [ raffleTask, setRaflleTask ] = useState('');
 
   const handleAddWheelItem = () => {
     if (wheelItem.length > 0) {
@@ -15,8 +18,20 @@ export default function App() {
         setWheelItems([ ...wheelItems, newWheelItem]);
         setWheelItem('');
     }
-
   };
+
+    const handleRaflleTask = () => {
+        if(wheelItems.length > 0) {
+            const index = Math.floor(Math.random() * wheelItems.length);
+            setRaflleTask(wheelItems[index].description);
+        }
+    }
+
+    const handleRemoveTask = (id) => {
+        setWheelItems((items) => {
+            return items.filter((item) => item.id !== id)
+        })
+    }
 
   return (
     <View style={styles.container}>
@@ -36,9 +51,12 @@ export default function App() {
         renderItem={ ({item}) => (
             <View style={styles.listView}>
                 <Text style={styles.listText}>{item.description}</Text>
+                <Button title='X' onPress={() => handleRemoveTask(item.id)} />
             </View>
         )}
         />
+        <Button title='Sortear' onPress={handleRaflleTask} />
+        <Text style={styles.title} >{ raffleTask }</Text>
       <StatusBar style="light" />
     </View>
   );
